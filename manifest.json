@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "CF Timer — Codeforces Problem Timer",
+  "version": "1.0.0",
+  "description": "Track time spent on Codeforces problems. Set targets, log attempts, and improve your competitive programming speed.",
+  "permissions": ["storage", "alarms", "notifications", "tabs"],
+  "host_permissions": ["https://codeforces.com/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://codeforces.com/problemset/problem/*/*", "https://codeforces.com/contest/*/problem/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

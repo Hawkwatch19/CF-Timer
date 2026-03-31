@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CF Timer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">⚡︎</span>
+        <span class="logo-text">CF TIMER</span>
+      </div>
+      <nav class="tabs">
+        <button class="tab active" data-tab="timer">TIMER</button>
+        <button class="tab" data-tab="log">LOG</button>
+        <button class="tab" data-tab="stats">STATS</button>
+      </nav>
+    </header>
+
+    <!-- TIMER TAB -->
+    <div class="tab-content active" id="tab-timer">
+      <!-- Problem Info -->
+      <div class="problem-card" id="problem-card">
+        <div class="problem-badge" id="problem-badge">NO PROBLEM DETECTED</div>
+        <div class="problem-name" id="problem-name">Open a Codeforces problem to auto-detect</div>
+        <div class="problem-meta" id="problem-meta"></div>
+      </div>
+
+      <!-- Timer Display -->
+      <div class="timer-section">
+        <div class="timer-ring-wrap">
+          <svg class="timer-ring" viewBox="0 0 120 120">
+            <circle class="ring-bg" cx="60" cy="60" r="52"/>
+            <circle class="ring-progress" id="ring-progress" cx="60" cy="60" r="52"/>
+          </svg>
+          <div class="timer-display">
+            <span class="timer-time" id="timer-time">00:00</span>
+            <span class="timer-label" id="timer-label">ELAPSED</span>
+          </div>
+        </div>
+
+        <!-- Target Time -->
+        <div class="target-row">
+          <span class="target-label">TARGET</span>
+          <div class="target-controls">
+            <button class="target-btn" id="target-dec">−</button>
+            <span class="target-val" id="target-val">30 min</span>
+            <button class="target-btn" id="target-inc">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="controls">
+        <button class="btn btn-primary" id="btn-start">
+          <span class="btn-icon">▶</span> START
+        </button>
+        <button class="btn btn-secondary" id="btn-pause" disabled>
+          <span class="btn-icon">⏸</span> PAUSE
+        </button>
+        <button class="btn btn-ghost" id="btn-reset">
+          <span class="btn-icon">↺</span> RESET
+        </button>
+      </div>
+
+      <!-- Quick Notes -->
+      <div class="notes-section">
+        <textarea class="notes-input" id="notes-input" placeholder="Approach notes, hints taken, stuck on..."></textarea>
+        <div class="notes-actions">
+          <select class="status-select" id="status-select">
+            <option value="solved">✓ Solved</option>
+            <option value="partial">◑ Partial</option>
+            <option value="stuck">✗ Stuck</option>
+            <option value="skipped">→ Skipped</option>
+          </select>
+          <button class="btn btn-save" id="btn-save">SAVE ATTEMPT</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOG TAB -->
+    <div class="tab-content" id="tab-log">
+      <!-- Search -->
+      <div class="search-row">
+        <input class="search-input" id="search-input" type="text" placeholder="Search by name, tag, or problem ID…" />
+      </div>
+      <div class="filter-row">
+        <button class="filter-btn active" data-filter="all">ALL</button>
+        <button class="filter-btn" data-filter="starred">⭐ STARRED</button>
+        <button class="filter-btn" data-filter="solved">✓ SOLVED</button>
+        <button class="filter-btn" data-filter="stuck">✗ STUCK</button>
+      </div>
+      <div class="log-header">
+        <span class="log-count" id="log-count">0 attempts</span>
+        <button class="btn-clear" id="btn-clear-log">CLEAR ALL</button>
+      </div>
+      <div class="log-list" id="log-list">
+        <div class="empty-state">
+          <div class="empty-icon">📋</div>
+          <div class="empty-text">No attempts logged yet.<br>Start solving!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS TAB -->
+    <div class="tab-content" id="tab-stats">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-total">0</div>
+          <div class="stat-label">PROBLEMS</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-solved">0</div>
+          <div class="stat-label">SOLVED</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-avg">—</div>
+          <div class="stat-label">AVG TIME</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-streak">0</div>
+          <div class="stat-label">STREAK 🔥</div>
+        </div>
+      </div>
+      <div class="bar-chart-section">
+        <div class="chart-title">TIME DISTRIBUTION</div>
+        <div class="bar-chart" id="bar-chart">
+          <div class="chart-empty">No data yet</div>
+        </div>
+      </div>
+      <div class="recent-section">
+        <div class="chart-title">RECENT PERFORMANCE</div>
+        <div class="sparkline-wrap" id="sparkline-wrap">
+          <div class="chart-empty">Solve more problems to see trends</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
