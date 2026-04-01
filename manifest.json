@@ -1,10 +1,18 @@
 {
   "manifest_version": 3,
-  "name": "CF Timer — Codeforces Problem Timer",
-  "version": "1.0.0",
-  "description": "Track time spent on Codeforces problems. Set targets, log attempts, and improve your competitive programming speed.",
+  "name": "Tempo — CP Problem Timer",
+  "version": "2.0.0",
+  "description": "Your competitive programming companion. Track time, log attempts, and improve your problem-solving pace on Codeforces, AtCoder, CSES, CodeChef, LeetCode and more.",
   "permissions": ["storage", "alarms", "notifications", "tabs"],
-  "host_permissions": ["https://codeforces.com/*"],
+  "host_permissions": [
+    "https://codeforces.com/*",
+    "https://atcoder.jp/*",
+    "https://cses.fi/*",
+    "https://www.codechef.com/*",
+    "https://leetcode.com/*",
+    "https://www.spoj.com/*",
+    "https://open.kattis.com/*"
+  ],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -19,7 +27,17 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://codeforces.com/problemset/problem/*/*", "https://codeforces.com/contest/*/problem/*"],
+      "matches": [
+        "https://codeforces.com/problemset/problem/*/*",
+        "https://codeforces.com/contest/*/problem/*",
+        "https://atcoder.jp/contests/*/tasks/*",
+        "https://cses.fi/problemset/task/*",
+        "https://www.codechef.com/problems/*",
+        "https://www.codechef.com/*/problems/*",
+        "https://leetcode.com/problems/*",
+        "https://www.spoj.com/problems/*",
+        "https://open.kattis.com/problems/*"
+      ],
       "js": ["content.js"]
     }
   ],

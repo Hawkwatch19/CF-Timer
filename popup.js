@@ -67,7 +67,7 @@ async function loadProblem() {
   // Also try to query active tab
   try {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (tab && tab.url && tab.url.includes('codeforces.com')) {
+    if (tab && tab.url && SUPPORTED_HOSTS.some(h => tab.url.includes(h))) {
       const response = await chrome.tabs.sendMessage(tab.id, { type: 'GET_PROBLEM_INFO' });
       if (response && response.problemId) {
         currentProblem = response;
@@ -81,17 +81,40 @@ async function loadProblem() {
   updateProblemCard();
 }
 
+const PLATFORM_COLORS = {
+  codeforces: '#1a8cff', atcoder: '#808080', cses: '#3a86ff',
+  codechef: '#5b4638', leetcode: '#ffa116', spoj: '#27ae60',
+  kattis: '#ef476f', unknown: '#888',
+};
+const PLATFORM_LABELS = {
+  codeforces: 'Codeforces', atcoder: 'AtCoder', cses: 'CSES',
+  codechef: 'CodeChef', leetcode: 'LeetCode', spoj: 'SPOJ',
+  kattis: 'Kattis', unknown: 'Unknown',
+};
+
 function updateProblemCard() {
-  if (currentProblem.problemId) {
-    problemBadge.textContent = `PROBLEM ${currentProblem.problemId}`;
-    problemName.textContent = currentProblem.problemName || 'Untitled Problem';
-    problemMeta.innerHTML = '';
+  if (currentProblem.problemId || currentProblem.problemName) {
+    const platform = currentProblem.platform || 'unknown';
+    const color    = PLATFORM_COLORS[platform] || '#888';
+    const label    = PLATFORM_LABELS[platform] || platform;
+
+    problemBadge.textContent = label.toUpperCase() + (currentProblem.problemId ? ` · ${currentProblem.problemId}` : '');
+    problemBadge.style.color = color;
+    problemName.textContent  = currentProblem.problemName || 'Untitled Problem';
+    problemMeta.innerHTML    = '';
 
     if (currentProblem.rating) {
       const r = document.createElement('span');
       r.textContent = `★ ${currentProblem.rating}`;
       r.style.color = getRatingColor(parseInt(currentProblem.rating));
       problemMeta.appendChild(r);
+    }
+
+    if (currentProblem.difficulty) {
+      const d = document.createElement('span');
+      d.textContent = `⬡ ${currentProblem.difficulty}`;
+      d.style.color = color;
+      problemMeta.appendChild(d);
     }
 
     if (currentProblem.tags && currentProblem.tags.length > 0) {
@@ -104,8 +127,9 @@ function updateProblemCard() {
     }
   } else {
     problemBadge.textContent = 'NO PROBLEM DETECTED';
-    problemName.textContent = 'Open a Codeforces problem to auto-detect';
-    problemMeta.innerHTML = '';
+    problemBadge.style.color = '';
+    problemName.textContent  = 'Open a problem page to auto-detect';
+    problemMeta.innerHTML    = '';
   }
 }
 
@@ -153,10 +177,12 @@ function saveTimerState() {
   });
 }
 
+const SUPPORTED_HOSTS = ['codeforces.com','atcoder.jp','cses.fi','codechef.com','leetcode.com','spoj.com','kattis.com'];
+
 async function broadcastToTab(message) {
   try {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (tab && tab.url && tab.url.includes('codeforces.com')) {
+    if (tab && tab.url && SUPPORTED_HOSTS.some(h => tab.url.includes(h))) {
       chrome.tabs.sendMessage(tab.id, message).catch(() => {});
     }
   } catch (e) {}
@@ -221,6 +247,7 @@ function startTimer() {
     type: timerState.baseElapsed > 0 ? 'TIMER_RESUMED' : 'TIMER_STARTED',
     elapsed: timerState.elapsed,
     targetSecs: timerState.targetMin * 60,
+    platform: currentProblem.platform || 'unknown',
   });
 }
 
@@ -301,6 +328,7 @@ btnSave.addEventListener('click', async () => {
     problemId: currentProblem.problemId || 'CUSTOM',
     problemName: currentProblem.problemName || 'Unknown Problem',
     url: currentProblem.url || '',
+    platform: currentProblem.platform || 'unknown',
     elapsed: timerState.elapsed,
     targetMin: timerState.targetMin,
     status: statusSelect.value,
@@ -377,7 +405,7 @@ async function renderLog() {
   }
 
   list.innerHTML = attempts.map(a => {
-    const url = a.url || buildCfUrl(a.problemId);
+    const url = a.url || buildCfUrl(a.problemId, a.platform, null);
     return `
     <div class="log-item ${a.status}" data-id="${a.id}">
       <div class="log-item-top">
@@ -390,6 +418,7 @@ async function renderLog() {
       </div>
       <div class="log-meta">
         <span class="log-status ${a.status}">${statusLabel(a.status)}</span>
+        ${a.platform && a.platform !== 'unknown' ? `<span class="log-platform" style="color:${PLATFORM_COLORS[a.platform]||'#888'}">${PLATFORM_LABELS[a.platform]||a.platform}</span>` : ''}
         <span>${a.date}</span>
         ${a.targetMin ? `<span>/ ${a.targetMin}min target</span>` : ''}
         ${a.rating ? `<span>★${a.rating}</span>` : ''}
@@ -552,9 +581,16 @@ document.getElementById('btn-clear-log').addEventListener('click', async () => {
 });
 
 // ── HELPERS ──
-function buildCfUrl(problemId) {
+function buildCfUrl(problemId, platform, url) {
+  if (url) return url;
   if (!problemId || problemId === 'CUSTOM') return 'https://codeforces.com/problemset';
-  // problemId is e.g. "1234A" or "1234A1" — split into contest number + problem letter
+  if (platform === 'cses')     return `https://cses.fi/problemset/task/${problemId}`;
+  if (platform === 'leetcode') return `https://leetcode.com/problems/${problemId}`;
+  if (platform === 'codechef') return `https://www.codechef.com/problems/${problemId}`;
+  if (platform === 'spoj')     return `https://www.spoj.com/problems/${problemId}`;
+  if (platform === 'kattis')   return `https://open.kattis.com/problems/${problemId}`;
+  if (platform === 'atcoder')  return `https://atcoder.jp`;
+  // Codeforces fallback
   const match = problemId.match(/^(\d+)([A-Z][0-9]?)$/i);
   if (match) return `https://codeforces.com/problemset/problem/${match[1]}/${match[2].toUpperCase()}`;
   return 'https://codeforces.com/problemset';
