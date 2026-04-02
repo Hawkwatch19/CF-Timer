@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Tempo — CP Problem Timer",
+  "name": "Overclock — CP Problem Timer",
   "version": "2.0.0",
-  "description": "Your competitive programming companion. Track time, log attempts, and improve your problem-solving pace on Codeforces, AtCoder, CSES, CodeChef, LeetCode and more.",
+  "description": "Your competitive programming companion. Track time, log attempts, and push past your limits on Codeforces, AtCoder, CSES, CodeChef, LeetCode and more.",
   "permissions": ["storage", "alarms", "notifications", "tabs"],
   "host_permissions": [
     "https://codeforces.com/*",

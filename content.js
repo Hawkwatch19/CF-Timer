@@ -1,4 +1,4 @@
-// Tempo — Content Script
+// Overclock — Content Script
 // Multi-platform problem detection + overlay with auto-minimize + theme toggle
 
 // ── PLATFORM DETECTION ────────────────────────────────────────────
@@ -374,8 +374,8 @@ function buildOverlay(platform) {
   div.id = 'cf-timer-overlay';
   div.innerHTML = `
     <div id="cft-handle">
-      <span id="cft-icon">𝅗𝅥</span>
-      <span id="cft-label">TEMPO</span>
+      <span id="cft-icon">⚡</span>
+      <span id="cft-label">OVERCLOCK</span>
     </div>
     <div id="cft-platform">${meta.icon} ${meta.label}</div>
     <div id="cft-time">00:00</div>
