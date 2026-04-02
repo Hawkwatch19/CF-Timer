@@ -14,7 +14,7 @@ function detectPlatform(url) {
 }
 
 const PLATFORM_META = {
-  codeforces: { label: 'Codeforces', color: '#1a8cff', icon: 'CF' },
+  codeforces: { label: 'Codeforces', color: '#e8ff47', icon: 'CF' },
   atcoder:    { label: 'AtCoder',    color: '#808080', icon: 'AC' },
   cses:       { label: 'CSES',       color: '#3a86ff', icon: 'CS' },
   codechef:   { label: 'CodeChef',   color: '#5b4638', icon: 'CC' },
@@ -214,7 +214,7 @@ let dragOffY          = 0;
 // ── AUTO-MINIMIZE ─────────────────────────────────────────────────
 let minimizeTimer = null;
 let isMinimized   = false;
-const MINIMIZE_DELAY = 30000;
+const MINIMIZE_DELAY = 3000;
 
 function resetMinimizeTimer() {
   if (minimizeTimer) clearTimeout(minimizeTimer);
