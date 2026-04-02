@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Overclock — CP Problem Timer",
+  "name": "Overclock",
   "version": "2.0.0",
   "description": "Your competitive programming companion. Track time, log attempts, and push past your limits on Codeforces, AtCoder, CSES, CodeChef, LeetCode and more.",
   "permissions": ["storage", "alarms", "notifications", "tabs"],
